@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Админ-панель{% endblock %}
+{% block title %}{{ t('admin_panel') }}{% endblock %}
 {% block nav_admin %}active{% endblock %}
 
 {% block extra_style %}
@@ -9,7 +9,6 @@
 .card { background:#fff; border:1px solid var(--border); border-radius:10px; padding:22px; margin-bottom:24px; }
 .card h3 { font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); }
 .form-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-bottom:14px; }
-.form-group { }
 .form-group label { display:block; font-size:.78rem; font-weight:600; color:var(--muted); margin-bottom:4px; }
 .form-group input, .form-group select, .form-group textarea {
   width:100%; border:1px solid var(--border); border-radius:6px;
@@ -19,148 +18,126 @@
 .form-group textarea { resize:vertical; min-height:72px; }
 .form-full { grid-column:1/-1; }
 .btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
-
 table { width:100%; border-collapse:collapse; font-size:.84rem; }
 th { text-align:left; font-size:.74rem; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); padding:8px 10px; border-bottom:2px solid var(--border); }
-td { padding:10px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+td { padding:10px 10px; border-bottom:1px solid var(--border); vertical-align:middle; }
 tr:last-child td { border-bottom:none; }
 .tag { display:inline-block; background:#eef2f7; border-radius:4px; padding:2px 8px; font-size:.75rem; color:var(--muted); }
 .empty-row td { color:var(--muted); font-style:italic; text-align:center; padding:20px; }
+.cover-thumb { width:36px; height:48px; object-fit:cover; border-radius:3px; }
 </style>
 {% endblock %}
 
 {% block body %}
 <div class="admin-wrap">
-  <h2>⚙ Панель администратора</h2>
+  <h2>⚙ {{ t('admin_panel') }}</h2>
 
-  <!-- ADD ISSUE -->
   <div class="card">
-    <h3>➕ Добавить новый выпуск</h3>
+    <h3>➕ {{ t('add_issue') }}</h3>
     <form method="post" action="{{ url_for('add_issue') }}">
       <div class="form-row">
         <div class="form-group form-full">
-          <label>Название выпуска *</label>
-          <input type="text" name="title" required placeholder="Yangi O'zbekiston taraqqiyotida...">
+          <label>{{ t('issue_title') }} *</label>
+          <input type="text" name="title" required placeholder="Yangi O'zbekiston...">
         </div>
-        <div class="form-group">
-          <label>Том (Volume)</label>
-          <input type="text" name="volume" placeholder="3">
-        </div>
-        <div class="form-group">
-          <label>Номер (Number)</label>
-          <input type="text" name="number" placeholder="1">
-        </div>
-        <div class="form-group">
-          <label>Год</label>
-          <input type="text" name="year" placeholder="2024">
-        </div>
-        <div class="form-group">
-          <label>Дата публикации</label>
-          <input type="date" name="published">
-        </div>
+        <div class="form-group"><label>{{ t('volume') }}</label><input type="text" name="volume" placeholder="3"></div>
+        <div class="form-group"><label>{{ t('number') }}</label><input type="text" name="number" placeholder="1"></div>
+        <div class="form-group"><label>{{ t('year') }}</label><input type="text" name="year" placeholder="2025"></div>
+        <div class="form-group"><label>{{ t('pub_date') }}</label><input type="date" name="published"></div>
       </div>
-      <div class="btn-row">
-        <button type="submit" class="btn btn-accent">Создать выпуск</button>
-      </div>
+      <div class="btn-row"><button type="submit" class="btn btn-accent">{{ t('create_issue') }}</button></div>
     </form>
   </div>
 
-  <!-- ADD ARTICLE -->
   <div class="card">
-    <h3>📄 Добавить статью</h3>
+    <h3>📄 {{ t('add_article') }}</h3>
     <form method="post" action="{{ url_for('add_article') }}" enctype="multipart/form-data">
       <div class="form-row">
         <div class="form-group form-full">
-          <label>Выпуск *</label>
+          <label>{{ t('select_issue') }} *</label>
           <select name="issue_id" required>
             {% for iss in issues %}
-              <option value="{{ iss.id }}">Vol. {{ iss.volume }} No. {{ iss.number }} ({{ iss.year }}) — {{ iss.title[:60] }}…</option>
+              <option value="{{ iss.id }}">{{ t('vol') }} {{ iss.volume }} {{ t('no') }} {{ iss.number }} ({{ iss.year }}) — {{ iss.title[:55] }}…</option>
             {% endfor %}
           </select>
         </div>
         <div class="form-group form-full">
-          <label>Название статьи *</label>
-          <input type="text" name="title" required placeholder="ERTA YOSHDA CHET TILINI...">
+          <label>{{ t('article_title') }} *</label>
+          <input type="text" name="title" required>
         </div>
         <div class="form-group form-full">
-          <label>Автор(ы) *</label>
-          <input type="text" name="authors" required placeholder="Rahimova Mushtari Alisher qizi">
+          <label>{{ t('authors') }} *</label>
+          <input type="text" name="authors" required>
         </div>
         <div class="form-group form-full">
-          <label>Аннотация</label>
-          <textarea name="abstract" placeholder="Краткое описание статьи..."></textarea>
+          <label>{{ t('annotation') }}</label>
+          <textarea name="abstract"></textarea>
         </div>
-        <div class="form-group">
-          <label>Страницы</label>
-          <input type="text" name="pages" placeholder="3-7">
-        </div>
-        <div class="form-group">
-          <label>PDF-файл</label>
-          <input type="file" name="pdf_file" accept=".pdf">
-        </div>
+        <div class="form-group"><label>{{ t('pages') }}</label><input type="text" name="pages" placeholder="3-7"></div>
+        <div class="form-group"><label>{{ t('pdf_file') }}</label><input type="file" name="pdf_file" accept=".pdf"></div>
+        <div class="form-group"><label>{{ t('cover_image') }}</label><input type="file" name="cover_image" accept=".jpg,.jpeg,.png,.webp"></div>
       </div>
-      <div class="btn-row">
-        <button type="submit" class="btn btn-primary">Добавить статью</button>
-      </div>
+      <div class="btn-row"><button type="submit" class="btn btn-primary">{{ t('add_article_btn') }}</button></div>
     </form>
   </div>
 
-  <!-- ISSUES TABLE -->
   <div class="card">
-    <h3>📚 Выпуски</h3>
+    <h3>📚 {{ t('issues_table') }}</h3>
     <table>
-      <tr><th>ID</th><th>Том / №</th><th>Год</th><th>Название</th><th>Действия</th></tr>
+      <tr><th>{{ t('id') }}</th><th>{{ t('volume') }}/{{ t('number') }}</th><th>{{ t('year') }}</th><th>{{ t('issue_title') }}</th><th>{{ t('actions') }}</th></tr>
       {% if issues %}
         {% for iss in issues %}
         <tr>
           <td>{{ iss.id }}</td>
-          <td><span class="tag">Vol.{{ iss.volume }} №{{ iss.number }}</span></td>
+          <td><span class="tag">{{ t('vol') }}{{ iss.volume }} {{ t('no') }}{{ iss.number }}</span></td>
           <td>{{ iss.year }}</td>
-          <td>{{ iss.title[:70] }}{% if iss.title|length > 70 %}…{% endif %}</td>
+          <td>{{ iss.title[:65] }}{% if iss.title|length > 65 %}…{% endif %}</td>
           <td>
-            <form method="post" action="{{ url_for('delete_issue', issue_id=iss.id) }}" style="display:inline;" onsubmit="return confirm('Удалить выпуск и все его статьи?')">
-              <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+            <form method="post" action="{{ url_for('delete_issue', issue_id=iss.id) }}" style="display:inline;" onsubmit="return confirm('{{ t('delete_issue_confirm') }}')">
+              <button type="submit" class="btn btn-danger btn-sm">{{ t('delete') }}</button>
             </form>
           </td>
         </tr>
         {% endfor %}
       {% else %}
-        <tr class="empty-row"><td colspan="5">Выпусков нет</td></tr>
+        <tr class="empty-row"><td colspan="5">{{ t('no_issues_table') }}</td></tr>
       {% endif %}
     </table>
   </div>
 
-  <!-- ARTICLES TABLE -->
   <div class="card">
-    <h3>📄 Все статьи</h3>
+    <h3>📄 {{ t('articles_table') }}</h3>
     <table>
-      <tr><th>ID</th><th>Выпуск</th><th>Название</th><th>Автор</th><th>PDF</th><th>Действия</th></tr>
+      <tr><th>{{ t('id') }}</th><th>Cover</th><th>{{ t('article_title') }}</th><th>{{ t('authors') }}</th><th>PDF</th><th>{{ t('actions') }}</th></tr>
       {% if articles %}
         {% for a in articles %}
         <tr>
           <td>{{ a.id }}</td>
-          <td><span class="tag">{{ a.issue_title[:30] }}…</span></td>
-          <td><a href="{{ url_for('article', article_id=a.id) }}" target="_blank">{{ a.title[:55] }}{% if a.title|length > 55 %}…{% endif %}</a></td>
-          <td>{{ a.authors[:40] }}</td>
+          <td>
+            {% if a.cover %}
+              <img class="cover-thumb" src="{{ url_for('uploaded_file', filename=a.cover) }}">
+            {% else %}
+              <span style="color:#ccc;font-size:1.2rem;">📄</span>
+            {% endif %}
+          </td>
+          <td><a href="{{ url_for('article', article_id=a.id) }}" target="_blank">{{ a.title[:50] }}{% if a.title|length > 50 %}…{% endif %}</a></td>
+          <td>{{ a.authors[:35] }}</td>
           <td>
             {% if a.filename %}
               <a href="{{ url_for('uploaded_file', filename=a.filename) }}" target="_blank" class="btn btn-pdf btn-sm">PDF</a>
-            {% else %}
-              <span style="color:#aaa;font-size:.78rem;">—</span>
-            {% endif %}
+            {% else %}<span style="color:#aaa;">—</span>{% endif %}
           </td>
           <td>
-            <form method="post" action="{{ url_for('delete_article', article_id=a.id) }}" style="display:inline;" onsubmit="return confirm('Удалить статью?')">
-              <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+            <form method="post" action="{{ url_for('delete_article', article_id=a.id) }}" style="display:inline;" onsubmit="return confirm('{{ t('delete_article_confirm') }}')">
+              <button type="submit" class="btn btn-danger btn-sm">{{ t('delete') }}</button>
             </form>
           </td>
         </tr>
         {% endfor %}
       {% else %}
-        <tr class="empty-row"><td colspan="6">Статей нет</td></tr>
+        <tr class="empty-row"><td colspan="6">{{ t('no_articles_table') }}</td></tr>
       {% endif %}
     </table>
   </div>
-
 </div>
 {% endblock %}
