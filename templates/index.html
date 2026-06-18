@@ -6,75 +6,72 @@
 <div class="page">
   <div class="breadcrumb">
     <a href="{{ url_for('index') }}">Home</a><span>/</span>
-    <a href="{{ url_for('index') }}">Archives</a><span>/</span>
-    <span>{% if issue %}Vol. {{ issue.volume }} No. {{ issue.number }} ({{ issue.year }}){% endif %}</span>
+    <a href="{{ url_for('index') }}">{{ t('archives') }}</a><span>/</span>
+    <span>{% if issue %}{{ t('vol') }} {{ issue.volume }} {{ t('no') }} {{ issue.number }} ({{ issue.year }}){% endif %}</span>
   </div>
 
   <main>
     {% if issue %}
-      <h2>Vol. {{ issue.volume }} No. {{ issue.number }} ({{ issue.year }}): {{ issue.title }}</h2>
+      <h2>{{ t('vol') }} {{ issue.volume }} {{ t('no') }} {{ issue.number }} ({{ issue.year }}): {{ issue.title }}</h2>
       <div class="issue-meta">
         Respublika miqyosidagi ilmiy-amaliy <strong>onlayn konferensiyasi</strong>
-        &nbsp;·&nbsp; <strong>Published:</strong> {{ issue.published }}
+        &nbsp;·&nbsp; <strong>{{ t('published') }}:</strong> {{ issue.published }}
       </div>
 
-      <div class="section-label">Статьи</div>
+      <div class="section-label">{{ t('articles') }}</div>
 
       {% if articles %}
         {% for a in articles %}
           <div class="art-card">
             <a class="art-cover" href="{{ url_for('article', article_id=a.id) }}">
-              <span class="ico">📄</span>Ilmiy<br>Jurnal
+              {% if a.cover %}
+                <img src="{{ url_for('uploaded_file', filename=a.cover) }}" alt="cover">
+              {% else %}
+                <span class="ico">📄</span>ILMIY<br>JURNAL
+              {% endif %}
             </a>
             <div class="art-body">
               <a class="art-title" href="{{ url_for('article', article_id=a.id) }}">{{ a.title }}</a>
               <div class="art-author">{{ a.authors }}</div>
-              {% if a.pages %}<div class="art-pages">стр. {{ a.pages }}</div>{% endif %}
+              {% if a.pages %}<div class="art-pages">{{ t('pages') }} {{ a.pages }}</div>{% endif %}
               <div style="margin-top:6px;">
                 {% if a.filename %}
-                  <a class="btn-pdf" href="{{ url_for('uploaded_file', filename=a.filename) }}" target="_blank">
-                    📄 pdf
-                  </a>
+                  <a class="btn-pdf" href="{{ url_for('uploaded_file', filename=a.filename) }}" target="_blank">📄 pdf</a>
                 {% else %}
-                  <span class="no-pdf">PDF не загружен</span>
+                  <span class="no-pdf">{{ t('no_pdf') }}</span>
                 {% endif %}
               </div>
             </div>
           </div>
         {% endfor %}
       {% else %}
-        <p style="color:var(--muted);padding:24px 0;">Статей в этом выпуске пока нет.</p>
+        <p style="color:var(--muted);padding:24px 0;">{{ t('no_articles') }}</p>
       {% endif %}
-
     {% else %}
-      <p style="color:var(--muted);padding:24px 0;">Выпусков пока нет.</p>
+      <p style="color:var(--muted);padding:24px 0;">{{ t('no_issues') }}</p>
     {% endif %}
   </main>
 
   <aside>
     <div class="sb-block">
-      <h4>Current Issue</h4>
+      <h4>{{ t('current_issue') }}</h4>
       {% if issue %}
-        <span style="font-size:.84rem;color:var(--text);">Vol. {{ issue.volume }} No. {{ issue.number }} ({{ issue.year }})</span>
+        <span style="font-size:.84rem;color:var(--text);">{{ t('vol') }} {{ issue.volume }} {{ t('no') }} {{ issue.number }} ({{ issue.year }})</span>
       {% endif %}
     </div>
-
     {% if issues|length > 1 %}
     <div class="sb-block">
-      <h4>Archives</h4>
+      <h4>{{ t('archives_sidebar') }}</h4>
       {% for iss in issues %}
-        <a href="{{ url_for('issue', issue_id=iss.id) }}" class="issue-link">
-          Vol. {{ iss.volume }} No. {{ iss.number }} ({{ iss.year }})
-        </a>
+        <a href="{{ url_for('issue', issue_id=iss.id) }}">{{ t('vol') }} {{ iss.volume }} {{ t('no') }} {{ iss.number }} ({{ iss.year }})</a>
       {% endfor %}
     </div>
     {% endif %}
-
     <div class="sb-block">
-      <h4>Information</h4>
-      <a href="#">For Readers</a>
-      <a href="#">For Authors</a>
-      <a href="#">For Librarians</a>
+      <h4>{{ t('information') }}</h4>
+      <a href="#">{{ t('for_readers') }}</a>
+      <a href="#">{{ t('for_authors') }}</a>
+      <a href="#">{{ t('for_librarians') }}</a>
     </div>
   </aside>
 </div>
