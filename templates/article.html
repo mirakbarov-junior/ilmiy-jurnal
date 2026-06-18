@@ -5,46 +5,55 @@
 <div class="page">
   <div class="breadcrumb">
     <a href="{{ url_for('index') }}">Home</a><span>/</span>
-    <a href="{{ url_for('issue', issue_id=issue.id) }}">Vol. {{ issue.volume }} No. {{ issue.number }}</a><span>/</span>
-    <span>Статья</span>
+    <a href="{{ url_for('issue', issue_id=issue.id) }}">{{ t('vol') }} {{ issue.volume }} {{ t('no') }} {{ issue.number }}</a><span>/</span>
+    <span>{{ t('articles') }}</span>
   </div>
 
   <main>
-    <h2 style="font-size:1.2rem;">{{ article.title }}</h2>
-    <div class="issue-meta" style="margin-top:10px;">
-      <strong>Автор(ы):</strong> {{ article.authors }}
-      {% if article.pages %}&nbsp;·&nbsp; <strong>Страницы:</strong> {{ article.pages }}{% endif %}
+    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:20px;">
+      {% if article.cover %}
+        <img src="{{ url_for('uploaded_file', filename=article.cover) }}"
+             style="width:110px;height:145px;object-fit:cover;border-radius:8px;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,.15);">
+      {% endif %}
+      <div>
+        <h2 style="font-size:1.15rem;">{{ article.title }}</h2>
+        <div class="issue-meta" style="margin-top:10px;border:none;padding:0;">
+          <strong>{{ t('authors') }}:</strong> {{ article.authors }}
+          {% if article.pages %}&nbsp;·&nbsp; <strong>{{ t('pages') }}</strong> {{ article.pages }}{% endif %}
+        </div>
+      </div>
     </div>
 
     {% if article.abstract %}
       <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:20px;">
-        <div class="section-label" style="margin-bottom:10px;">Аннотация</div>
-        <p style="font-size:.92rem;line-height:1.7;color:var(--text);">{{ article.abstract }}</p>
+        <div class="section-label" style="margin-bottom:10px;">{{ t('abstract') }}</div>
+        <p style="font-size:.92rem;line-height:1.7;">{{ article.abstract }}</p>
       </div>
+    {% else %}
+      <p style="color:#aaa;font-size:.85rem;margin-bottom:16px;">{{ t('no_abstract') }}</p>
     {% endif %}
 
     {% if article.filename %}
-      <a class="btn btn-pdf" href="{{ url_for('uploaded_file', filename=article.filename) }}" target="_blank" style="font-size:.92rem;padding:10px 20px;">
-        📄 Скачать / просмотреть PDF
+      <a class="btn btn-pdf" href="{{ url_for('uploaded_file', filename=article.filename) }}" target="_blank"
+         style="font-size:.92rem;padding:10px 20px;">
+        📄 {{ t('download_pdf') }}
       </a>
     {% endif %}
 
     <div style="margin-top:28px;">
-      <a href="{{ url_for('issue', issue_id=issue.id) }}" style="color:var(--primary);font-size:.85rem;">← Назад к выпуску</a>
+      <a href="{{ url_for('issue', issue_id=issue.id) }}" style="color:var(--primary);font-size:.85rem;">{{ t('back_to_issue') }}</a>
     </div>
   </main>
 
   <aside>
     <div class="sb-block">
-      <h4>Выпуск</h4>
-      <a href="{{ url_for('issue', issue_id=issue.id) }}" class="issue-link">
-        Vol. {{ issue.volume }} No. {{ issue.number }} ({{ issue.year }})
-      </a>
+      <h4>{{ t('current_issue') }}</h4>
+      <a href="{{ url_for('issue', issue_id=issue.id) }}">{{ t('vol') }} {{ issue.volume }} {{ t('no') }} {{ issue.number }} ({{ issue.year }})</a>
     </div>
     <div class="sb-block">
-      <h4>Information</h4>
-      <a href="#">For Readers</a>
-      <a href="#">For Authors</a>
+      <h4>{{ t('information') }}</h4>
+      <a href="#">{{ t('for_readers') }}</a>
+      <a href="#">{{ t('for_authors') }}</a>
     </div>
   </aside>
 </div>
