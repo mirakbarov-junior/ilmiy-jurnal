@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Вход — Admin{% endblock %}
+{% block title %}{{ t('login_title') }}{% endblock %}
 
 {% block extra_style %}
 <style>
@@ -18,17 +18,17 @@
 {% block body %}
 <div class="login-wrap">
   <div class="login-card">
-    <h2>🔐 Вход для администратора</h2>
+    <h2>🔐 {{ t('login_title') }}</h2>
     <form method="post">
       <div class="form-group">
-        <label>Логин</label>
+        <label>{{ t('username') }}</label>
         <input type="text" name="username" autofocus required>
       </div>
       <div class="form-group">
-        <label>Пароль</label>
+        <label>{{ t('password') }}</label>
         <input type="password" name="password" required>
       </div>
-      <button type="submit" class="btn-login">Войти</button>
+      <button type="submit" class="btn-login">{{ t('login_btn') }}</button>
     </form>
   </div>
 </div>
