@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}Админ-панель{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+{% block extra_style %}
+<style>
+.admin-wrap { max-width:1100px; margin:0 auto; padding:26px 24px; }
+.admin-wrap h2 { font-size:1.3rem; font-weight:700; color:var(--dark); margin-bottom:22px; }
+.card { background:#fff; border:1px solid var(--border); border-radius:10px; padding:22px; margin-bottom:24px; }
+.card h3 { font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+.form-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-bottom:14px; }
+.form-group { }
+.form-group label { display:block; font-size:.78rem; font-weight:600; color:var(--muted); margin-bottom:4px; }
+.form-group input, .form-group select, .form-group textarea {
+  width:100%; border:1px solid var(--border); border-radius:6px;
+  padding:8px 10px; font-size:.87rem; font-family:inherit; outline:none; transition:border .15s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--primary); }
+.form-group textarea { resize:vertical; min-height:72px; }
+.form-full { grid-column:1/-1; }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+
+table { width:100%; border-collapse:collapse; font-size:.84rem; }
+th { text-align:left; font-size:.74rem; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); padding:8px 10px; border-bottom:2px solid var(--border); }
+td { padding:10px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+.tag { display:inline-block; background:#eef2f7; border-radius:4px; padding:2px 8px; font-size:.75rem; color:var(--muted); }
+.empty-row td { color:var(--muted); font-style:italic; text-align:center; padding:20px; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-wrap">
+  <h2>⚙ Панель администратора</h2>
+
+  <!-- ADD ISSUE -->
+  <div class="card">
+    <h3>➕ Добавить новый выпуск</h3>
+    <form method="post" action="{{ url_for('add_issue') }}">
+      <div class="form-row">
+        <div class="form-group form-full">
+          <label>Название выпуска *</label>
+          <input type="text" name="title" required placeholder="Yangi O'zbekiston taraqqiyotida...">
+        </div>
+        <div class="form-group">
+          <label>Том (Volume)</label>
+          <input type="text" name="volume" placeholder="3">
+        </div>
+        <div class="form-group">
+          <label>Номер (Number)</label>
+          <input type="text" name="number" placeholder="1">
+        </div>
+        <div class="form-group">
+          <label>Год</label>
+          <input type="text" name="year" placeholder="2024">
+        </div>
+        <div class="form-group">
+          <label>Дата публикации</label>
+          <input type="date" name="published">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="submit" class="btn btn-accent">Создать выпуск</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ADD ARTICLE -->
+  <div class="card">
+    <h3>📄 Добавить статью</h3>
+    <form method="post" action="{{ url_for('add_article') }}" enctype="multipart/form-data">
+      <div class="form-row">
+        <div class="form-group form-full">
+          <label>Выпуск *</label>
+          <select name="issue_id" required>
+            {% for iss in issues %}
+              <option value="{{ iss.id }}">Vol. {{ iss.volume }} No. {{ iss.number }} ({{ iss.year }}) — {{ iss.title[:60] }}…</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group form-full">
+          <label>Название статьи *</label>
+          <input type="text" name="title" required placeholder="ERTA YOSHDA CHET TILINI...">
+        </div>
+        <div class="form-group form-full">
+          <label>Автор(ы) *</label>
+          <input type="text" name="authors" required placeholder="Rahimova Mushtari Alisher qizi">
+        </div>
+        <div class="form-group form-full">
+          <label>Аннотация</label>
+          <textarea name="abstract" placeholder="Краткое описание статьи..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Страницы</label>
+          <input type="text" name="pages" placeholder="3-7">
+        </div>
+        <div class="form-group">
+          <label>PDF-файл</label>
+          <input type="file" name="pdf_file" accept=".pdf">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">Добавить статью</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ISSUES TABLE -->
+  <div class="card">
+    <h3>📚 Выпуски</h3>
+    <table>
+      <tr><th>ID</th><th>Том / №</th><th>Год</th><th>Название</th><th>Действия</th></tr>
+      {% if issues %}
+        {% for iss in issues %}
+        <tr>
+          <td>{{ iss.id }}</td>
+          <td><span class="tag">Vol.{{ iss.volume }} №{{ iss.number }}</span></td>
+          <td>{{ iss.year }}</td>
+          <td>{{ iss.title[:70] }}{% if iss.title|length > 70 %}…{% endif %}</td>
+          <td>
+            <form method="post" action="{{ url_for('delete_issue', issue_id=iss.id) }}" style="display:inline;" onsubmit="return confirm('Удалить выпуск и все его статьи?')">
+              <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr class="empty-row"><td colspan="5">Выпусков нет</td></tr>
+      {% endif %}
+    </table>
+  </div>
+
+  <!-- ARTICLES TABLE -->
+  <div class="card">
+    <h3>📄 Все статьи</h3>
+    <table>
+      <tr><th>ID</th><th>Выпуск</th><th>Название</th><th>Автор</th><th>PDF</th><th>Действия</th></tr>
+      {% if articles %}
+        {% for a in articles %}
+        <tr>
+          <td>{{ a.id }}</td>
+          <td><span class="tag">{{ a.issue_title[:30] }}…</span></td>
+          <td><a href="{{ url_for('article', article_id=a.id) }}" target="_blank">{{ a.title[:55] }}{% if a.title|length > 55 %}…{% endif %}</a></td>
+          <td>{{ a.authors[:40] }}</td>
+          <td>
+            {% if a.filename %}
+              <a href="{{ url_for('uploaded_file', filename=a.filename) }}" target="_blank" class="btn btn-pdf btn-sm">PDF</a>
+            {% else %}
+              <span style="color:#aaa;font-size:.78rem;">—</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="post" action="{{ url_for('delete_article', article_id=a.id) }}" style="display:inline;" onsubmit="return confirm('Удалить статью?')">
+              <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr class="empty-row"><td colspan="6">Статей нет</td></tr>
+      {% endif %}
+    </table>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Вход — Admin{% endblock %}
+
+{% block extra_style %}
+<style>
+.login-wrap { max-width:400px; margin:60px auto; padding:0 24px; }
+.login-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:32px; box-shadow:0 4px 24px rgba(0,0,0,.07); }
+.login-card h2 { font-size:1.2rem; color:var(--dark); margin-bottom:22px; text-align:center; }
+.form-group { margin-bottom:14px; }
+.form-group label { display:block; font-size:.8rem; font-weight:600; color:var(--muted); margin-bottom:5px; }
+.form-group input { width:100%; border:1px solid var(--border); border-radius:6px; padding:9px 12px; font-size:.9rem; font-family:inherit; outline:none; transition:border .15s; }
+.form-group input:focus { border-color:var(--primary); }
+.btn-login { width:100%; background:var(--primary); color:#fff; border:none; border-radius:7px; padding:11px; font-size:.95rem; font-weight:700; cursor:pointer; margin-top:6px; transition:background .15s; }
+.btn-login:hover { background:var(--dark); }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="login-wrap">
+  <div class="login-card">
+    <h2>🔐 Вход для администратора</h2>
+    <form method="post">
+      <div class="form-group">
+        <label>Логин</label>
+        <input type="text" name="username" autofocus required>
+      </div>
+      <div class="form-group">
+        <label>Пароль</label>
+        <input type="password" name="password" required>
+      </div>
+      <button type="submit" class="btn-login">Войти</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

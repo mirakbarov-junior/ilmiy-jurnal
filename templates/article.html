@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block body %}
+<div class="page">
+  <div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Home</a><span>/</span>
+    <a href="{{ url_for('issue', issue_id=issue.id) }}">Vol. {{ issue.volume }} No. {{ issue.number }}</a><span>/</span>
+    <span>Статья</span>
+  </div>
+
+  <main>
+    <h2 style="font-size:1.2rem;">{{ article.title }}</h2>
+    <div class="issue-meta" style="margin-top:10px;">
+      <strong>Автор(ы):</strong> {{ article.authors }}
+      {% if article.pages %}&nbsp;·&nbsp; <strong>Страницы:</strong> {{ article.pages }}{% endif %}
+    </div>
+
+    {% if article.abstract %}
+      <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:20px;">
+        <div class="section-label" style="margin-bottom:10px;">Аннотация</div>
+        <p style="font-size:.92rem;line-height:1.7;color:var(--text);">{{ article.abstract }}</p>
+      </div>
+    {% endif %}
+
+    {% if article.filename %}
+      <a class="btn btn-pdf" href="{{ url_for('uploaded_file', filename=article.filename) }}" target="_blank" style="font-size:.92rem;padding:10px 20px;">
+        📄 Скачать / просмотреть PDF
+      </a>
+    {% endif %}
+
+    <div style="margin-top:28px;">
+      <a href="{{ url_for('issue', issue_id=issue.id) }}" style="color:var(--primary);font-size:.85rem;">← Назад к выпуску</a>
+    </div>
+  </main>
+
+  <aside>
+    <div class="sb-block">
+      <h4>Выпуск</h4>
+      <a href="{{ url_for('issue', issue_id=issue.id) }}" class="issue-link">
+        Vol. {{ issue.volume }} No. {{ issue.number }} ({{ issue.year }})
+      </a>
+    </div>
+    <div class="sb-block">
+      <h4>Information</h4>
+      <a href="#">For Readers</a>
+      <a href="#">For Authors</a>
+    </div>
+  </aside>
+</div>
+{% endblock %}
